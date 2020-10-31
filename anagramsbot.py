@@ -1,15 +1,15 @@
 from screenshot import Screenshot
 from itertools import permutations
+from time import sleep
 import cv2
 import pytesseract
 import json
-import numpy as np
+import serial
 
 def threshold(image):
     return cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 
 def get_all_words(string):
-    string = string.lower()
     words = {
         6: [],
         5: [],
@@ -27,6 +27,7 @@ def get_all_words(string):
                         ret.append(comb)
         return ret
 
+#remove repeating letters from get_fours and get_threes
     def get_fours(string):
         ret = []
         for i in range(len(string)):
@@ -65,7 +66,6 @@ def get_all_words(string):
             continue
     return words
 
-
 capture = Screenshot("LonelyScreen AirPlay Receiver")
 print("Press 's' when you are on the screen with the letters visible:")
 
@@ -82,15 +82,29 @@ frame = threshold(frame)
 pytesseract.pytesseract.tesseract_cmd = r'C:\Users\Moez\AppData\Local\Tesseract-OCR\tesseract.exe'
 
 config = r'--oem 3 --psm 6'
-letters = "".join(list(pytesseract.image_to_string(frame, config=config))[:-2])
+letters = "".join(list(pytesseract.image_to_string(frame, config=config))[:-2]).lower()
 all_words = get_all_words(letters)
-#['C', 'S', 'L', 'O', 'A', 'E', '\n', '\x0c']
+coords = {
+    letters[0]: (1,1),
+    letters[1]: (1,1),
+    letters[2]: (1,1),
+    letters[3]: (1,1),
+    letters[4]: (1,1),
+    letters[5]: (1,1)
+}
+s = serial.Serial(
+    port="",
+    baudrate=38400
+)
+
+for word in all_words:
+    for letter in word:
+        s.write([coords[letter][i] for i in range(2)])
+        sleep(0.2)
 
 #show image after done
 while True:
-    cv2.imshow("swgg", frame)
+    cv2.imshow("Processed", frame)
     if cv2.waitKey(1) == ord('s'):
         cv2.destroyAllWindows()
         break
-
-
