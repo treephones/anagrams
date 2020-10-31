@@ -90,7 +90,8 @@ coords = {
     letters[2]: (1,1),
     letters[3]: (1,1),
     letters[4]: (1,1),
-    letters[5]: (1,1)
+    letters[5]: (1,1),
+    'enter': (1,1)
 }
 s = serial.Serial(
     port="",
@@ -99,9 +100,10 @@ s = serial.Serial(
 
 for word in all_words:
     for letter in word:
-        s.write([coords[letter][i] for i in range(2)])
+        s.write(bytearray(coords[letter]))
         sleep(0.2)
-
+    s.write(bytearray(coords['enter']))
+    
 #show image after done
 while True:
     cv2.imshow("Processed", frame)
