@@ -92,24 +92,29 @@ config = r'--oem 3 --psm 6'
 letters = "".join(list(pytesseract.image_to_string(frame, config=config))[:-2]).lower()
 print(letters)
 all_words = get_all_words(letters)
-coords = {
-    letters[0]: 0,
-    letters[1]: 32,
-    letters[2]: 64,
-    letters[3]: 96,
-    letters[4]: 128,
-    letters[5]: 160
-}
+
+coords = {}
+
+for i in range(6):
+    coords[letters[i]] = i*32 if letters[i] not in coords else coords[f'{letters[i]}2'] = i*32
+
 s = serial.Serial(
     port='COM5',
     baudrate=9600
 )
 
 curr = 0
+track = []
 for word in all_words:
     for letter in word:
-        s.write(str(coords[letter] - curr).encode())
-        curr = coords[letter]
+        if letter not in track:
+            s.write(str(coords[letter] - curr).encode())
+            curr = coords[letter]
+        else:
+            s.write(str(coords[f'{letter}2'] - curr).encode())
+            curr = coords[f'{letter}2']
+        track.append(letter)
+    track = []
     s.write('1'.encode())
 
 #show image after done
