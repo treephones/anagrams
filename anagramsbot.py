@@ -94,9 +94,11 @@ print(letters)
 all_words = get_all_words(letters)
 
 coords = {}
-
 for i in range(6):
-    coords[letters[i]] = i*32 if letters[i] not in coords else coords[f'{letters[i]}2'] = i*32
+    if letters[i] not in coords:
+        coords[letters[i]] = i*20
+    else:
+        coords[f'{letters[i]}2'] = i*20
 
 s = serial.Serial(
     port='COM5',
@@ -114,8 +116,9 @@ for word in all_words:
             s.write(str(coords[f'{letter}2'] - curr).encode())
             curr = coords[f'{letter}2']
         track.append(letter)
+        sleep(0.2)
     track = []
-    s.write('1'.encode())
+    s.write('5'.encode())
 
 #show image after done
 while True:
