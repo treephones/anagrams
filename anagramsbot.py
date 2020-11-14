@@ -108,6 +108,7 @@ s = serial.Serial(
 curr = 0
 track = []
 for word in all_words:
+    print(word)
     for letter in word:
         if letter not in track:
             s.write(str(coords[letter] - curr).encode())
@@ -116,8 +117,9 @@ for word in all_words:
             s.write(str(coords[f'{letter}2'] - curr).encode())
             curr = coords[f'{letter}2']
         track.append(letter)
-        sleep(0.2)
+        sleep(0.1)
     track = []
+    curr = 0
     s.write('5'.encode())
 
 #show image after done
