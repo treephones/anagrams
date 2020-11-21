@@ -90,8 +90,10 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Users\Moez\AppData\Local\Tesseract-
 
 config = r'--oem 3 --psm 6'
 letters = "".join(list(pytesseract.image_to_string(frame, config=config))[:-2]).lower()
-print(letters)
-all_words = get_all_words(letters)
+print(f'\n{letters}\nAre those the correct letters? If not, enter the correct letters in order below, otherwise press enter:')
+letters_m = input()
+letters = letters_m.lower() if len(letters_m) == 6 else letters
+all_words = list(set(get_all_words(letters)))
 
 coords = {}
 for i in range(6):
@@ -117,10 +119,11 @@ for word in all_words:
             s.write(str(coords[f'{letter}2'] - curr).encode())
             curr = coords[f'{letter}2']
         track.append(letter)
-        sleep(0.1)
+        sleep(0.2)
     track = []
     curr = 0
     s.write('5'.encode())
+    sleep(0.2)
 
 #show image after done
 while True:
@@ -128,3 +131,6 @@ while True:
     if cv2.waitKey(1) == ord('s'):
         cv2.destroyAllWindows()
         break
+
+#send back to initial potition if all words are covered
+s.write('5'.encode())
