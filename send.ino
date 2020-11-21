@@ -17,9 +17,19 @@ void loop() {
     }
     else if(x == 5) {
       //"enter" sequence 
-      Mouse.move(60-currPos,-21);
+      Mouse.move(-100,0);
+      delay(10);
+      Mouse.move(0,-27);
+      delay(10);
+      Mouse.move(24,0);
+      delay(10);
       Mouse.click();
-      Mouse.move(currPos-60,21);
+      Mouse.move(-100,0);
+      delay(10);
+      Mouse.move(0,27);
+      delay(10);
+      Mouse.move(13,0);
+      delay(10);
     }
     else {
       currMove.concat(String(x));
@@ -27,8 +37,6 @@ void loop() {
         
         Mouse.move(conv(currMove.toInt()),0);
         Mouse.click();
-        
-        currPos += conv(currMove.toInt());
         Serial.println(currMove.toInt());
         //Mouse.click(); 
         currMove = String();
